@@ -12,7 +12,7 @@ echo "Updating package cache..."
 apt-get update -qq
 echo "Installing Apache..."
 apt-get install -y apache2 > /dev/null
-which apache2
+which apache2 &> /dev/null
 
 if [ $? != 0 ]
 then
