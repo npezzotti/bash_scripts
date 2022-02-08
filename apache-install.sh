@@ -63,7 +63,7 @@ else
 fi
 
 echo "Enabling test site..."
-a2ensite test
+a2ensite -q test > /dev/null
 
 echo "Reloading Apache..."
 systemctl reload apache2
