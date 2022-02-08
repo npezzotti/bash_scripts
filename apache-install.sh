@@ -66,3 +66,4 @@ then
 else
   echo "* Apache failed to start, run systemctl status apache2 to troubleshoot."
 fi
+
