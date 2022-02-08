@@ -12,6 +12,13 @@ echo "Updating package cache..."
 apt-get update -qq
 echo "Installing Apache..."
 apt-get install -y apache2 > /dev/null
+which apache2
+
+if [ $? != 0 ]
+then
+  echo "Apache failed to install- check logs above for reason."
+  exit 1
+fi
 
 echo "Allowing Apache app in Firewall..."
 ufw allow in "Apache"
