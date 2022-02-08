@@ -30,7 +30,7 @@ if [ -d $TEST_SITE_DIR ]
 then
   echo "/var/www/test already exists, moving on..."
 else
-  echo "Creating directory /var/www/test..."
+  echo "* Creating directory /var/www/test..."
   mkdir $TEST_SITE_DIR
 fi
 
@@ -38,7 +38,7 @@ if [ -f $TEST_SITE_HTML ]
 then
   echo "/var/www/test/index.html already exists, moving on..."
 else
-  echo "Creating test index.html..."
+  echo "* Creating test index.html..."
   echo """<html>
   <head>
     <title> Test </title>
@@ -54,15 +54,15 @@ else
   sed -i 's/#ServerName www.example.com/ServerName www.test.com/' /etc/apache2/sites-available/test.conf
 fi
 
-echo "Enabling test site..."
+echo "* Enabling test site..."
 a2ensite test
 
-echo "Reloading Apache..."
+echo "* Reloading Apache..."
 systemctl reload apache2
 
 if [  $(systemctl is-active apache2) == "active" ]
 then
-  echo -e "Installation succesfull! \nRun 'curl localhost -H \"Host: www.test.com\"'"
+  echo -e "* Installation succesfull! \nRun 'curl localhost -H \"Host: www.test.com\"'"
 else
-  echo "Apache failed to start, run systemctl status apache2 to troubleshoot."
+  echo "* Apache failed to start, run systemctl status apache2 to troubleshoot."
 fi
