@@ -23,27 +23,46 @@ then
   echo "* WARNING: Firewall inactive..."
 fi
 
-mkdir /var/www/test
+TEST_SITE_DIR=/var/www/test
+TEST_SITE_HTML=/var/www/test/index.html
 
-echo """<html>
-<head>
-  <title> This is a test! </title>
-</head>
-<body>
-  <p> I'm running this website on an Ubuntu Server server!
-</body>
-</html>
-""" > /var/www/test/index.html
+if [ -d $TEST_SITE_DIR ]
+then
+  echo "/var/www/test already exists, moving on..."
+else
+  echo "Creating directory /var/www/test..."
+  mkdir $TEST_SITE_DIR
+fi
 
-echo "Creating configs..."
-cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/test.conf
-sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/test/' /etc/apache2/sites-available/test.conf
-sed -i 's/#ServerName www.example.com/ServerName www.test.com/' /etc/apache2/sites-available/test.conf
+if [ -f $TEST_SITE_HTML ]
+then
+  echo "/var/www/test/index.html already exists, moving on..."
+else
+  echo "Creating test index.html..."
+  echo """<html>
+  <head>
+    <title> Test </title>
+  </head>
+  <body>
+    <p> This is a test site! </p>
+  </body>
+  </html>
+  """ > $TEST_SITE_HTML
+
+  cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/test.conf
+  sed -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/test/' /etc/apache2/sites-available/test.conf
+  sed -i 's/#ServerName www.example.com/ServerName www.test.com/' /etc/apache2/sites-available/test.conf
+fi
 
 echo "Enabling test site..."
-a2ensite test > /dev/null
+a2ensite test
 
 echo "Reloading Apache..."
 systemctl reload apache2
 
-echo -e "Installation succesfull! \nRun 'curl localhost -H \"Host: www.test.com\"'"
+if [  $(systemctl is-active apache2) == "active" ]
+then
+  echo -e "Installation succesfull! \nRun 'curl localhost -H \"Host: www.test.com\"'"
+else
+  echo "Apache failed to start, run systemctl status apache2 to troubleshoot."
+fi
